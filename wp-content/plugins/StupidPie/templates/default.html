@@ -1,0 +1,33 @@
+{% api %}{% image %}{% video %}
+<article class="post-1 post type-post status-publish format-standard hentry category-uncategorized">
+    <div class="post-format-single standard"></div>
+
+    <div class="entry-wrap">
+        <div class="entry-content">
+            <p style="margin-top:-20px;">Posted on <i>{{ 'now' | date 'M d Y' }}</i> by <em style="color:blue;">Grocks Lamuchu</em></p>
+
+            <p>We store lot of of {{ term }} in various styles. Here is some fascinating pictures about <strong>{{ term }}</strong>. Click image to get bigger picture, and if you find <em>{{term}}</em> interesting, if u like, u might pin it to <a href="https://www.pinterest.com/search/pins/?q={{ term | urlencode }}">Pinterest</a>.
+            </p>
+
+            {% if images.0.title %}
+            <p><a target="_blank" href="{{ images.0.title | build_permalink_for 'tag' }}" onclick="window.location.href = 'http://pedia.lambaro.com?q={{ term | urlencode }}';"><img src="{{ images.0.mediaurl }}" width="100%"></a>
+            </p>
+            {% endif %}
+            
+            <div style="text-align:center;"><h3>{{ term }} Gallery</h3></div>
+
+            {% if have_images %}
+                {% for index, item in images %}
+                    {% if index < 12%}
+                    <a target="_blank" href="{{ item.title | build_permalink_for 'tag' }}" onclick="window.location.href = 'http://pedia.lambaro.com?q={{ term | urlencode }}';"><img src="{{ item.mediaurl }}" width="156" height="156" alt="{{ item.title }}" title="{{ item.title }}" onError="this.onerror=null;this.src='http://www.9plans.xyz/wp-content/uploads/2015/10/IMAGE-COMING-SOON.gif';"></a>
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+            
+            
+
+        </div>
+
+    </div>
+</article>

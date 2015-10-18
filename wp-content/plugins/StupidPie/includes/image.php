@@ -1,7 +1,6 @@
 <?php
 class Image_Tag extends H2o_Node {
     var $term, $cacheKey;
-
     function __construct($argstring, $parser, $pos=0) {
         list($this->term, $this->hack) = explode(' ', $argstring);
     }
@@ -16,29 +15,22 @@ class Image_Tag extends H2o_Node {
     	$term = urlencode($term);
     	return "http://www.bing.com/images/search?q=$term";
     }
-
     function filter($feed)
     {
         global $spp_settings;
         $bad_urls = $spp_settings->bad_urls;
-
         $filtered_feed = array();
-
         foreach ($feed as $item) {
             $found = false;
-
             foreach ($bad_urls as $bad_url) {
                 if(stripos($item->mediaurl, $bad_url) !== false){
                     $found = true;
                 }
             }
-
             if(!$found){
                 $filtered_feed[] = $item;
             }
-
         }
-
         return $filtered_feed;
     }
       
@@ -48,21 +40,17 @@ class Image_Tag extends H2o_Node {
        phpQuery::newDocument($doc);
        $images = array();
        
-       foreach(pq('div.dg_u a') as $a){
-           $raw_image = pq($a)->attr('m');
-           $urls = json_decode($this->fix_json($raw_image), true);
-           
-           // let's create image properties
-	       $image['link'] = $urls['surl'];
-           $image['mediaurl'] = $urls['imgurl'];
-	       $image['title'] = pq($a)->attr('t1');
-	       $image['size'] = pq($a)->attr('t2');
-           
-           $images[] = $image;
+       foreach(pq('div.item') as $item){
+		
+       $image['mediaurl'] = pq('a.thumb', $item)->attr('href');
+	   $image['link'] = pq('a.tit', $item)->attr('href');
+	   $image['title'] = pq('div.des', $item)->html();
+	   $image['size'] = pq('div.fileInfo', $item)->html();
+       $images[] = $image;
+	
        } 
        return $images;
    }
-
    function render($context, $stream) {
         $cache = h2o_cache($context->options);
         $term  = $context->resolve(':term');
@@ -94,5 +82,4 @@ class Image_Tag extends H2o_Node {
         return $j;
     }
 }
-
 h2o::addTag('image');
